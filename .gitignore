@@ -1,45 +1,93 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
+# ==============================
+
+# FLUTTER + ANDROID PRO GITIGNORE
+
+# ==============================
+
+# ---------- System ----------
+
 .DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+Thumbs.db
+*.swp
+*.log
+*.tmp
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
+# ---------- Dart / Flutter ----------
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
-/build/
+build/
 
-# Symbolication related
+# Generated files
+
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# Obfuscation / symbols
+
 app.*.symbols
-
-# Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# ---------- IDE ----------
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code (optional — uncomment if you DON'T want settings uploaded)
+
+.vscode/
+
+# ---------- Android ----------
+
+android/.gradle/
+android/local.properties
+android/app/debug
+android/app/profile
+android/app/release
+
+# Keystore files (VERY IMPORTANT 🔐)
+
+*.jks
+*.keystore
+key.properties
+
+# ---------- iOS ----------
+
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# ---------- MacOS ----------
+
+macos/Pods/
+
+# ---------- Windows ----------
+
+windows/flutter/ephemeral/
+
+# ---------- Linux ----------
+
+linux/flutter/ephemeral/
+
+# ---------- Web ----------
+
+web/flutter_service_worker.js
+web/flutter.js
+web/main.dart.js
+
+# ---------- Misc ----------
+
+.history/
+.svn/
+.swiftpm/
+.atom/
+.build/
+.buildlog/
+migrate_working_dir/

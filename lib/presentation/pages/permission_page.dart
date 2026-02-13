@@ -9,18 +9,39 @@ class PermissionRequestScreen extends StatefulWidget {
   const PermissionRequestScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _PermissionRequestScreenState createState() =>
+  State<PermissionRequestScreen> createState() =>
       _PermissionRequestScreenState();
 }
 
 class _PermissionRequestScreenState extends State<PermissionRequestScreen> {
+  bool? granted;
+
+  @override
+  void initState() {
+    super.initState();
+    checkPermission();
+  }
+
+  // ---------------- CHECK PERMISSION ----------------
+
+  Future<void> checkPermission() async {
+    bool result = await requestPermission();
+    setState(() => granted = result);
+
+    if (result) {
+      Get.off(() => const RoutePage());
+    }
+  }
+
+  // ---------------- REQUEST PERMISSION ----------------
+
   Future<bool> requestPermission() async {
     try {
       DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin.androidInfo;
 
       PermissionStatus permissionStatus;
+
       if (androidDeviceInfo.version.sdkInt < 30) {
         permissionStatus = await Permission.storage.request();
       } else {
@@ -29,91 +50,91 @@ class _PermissionRequestScreenState extends State<PermissionRequestScreen> {
 
       return permissionStatus.isGranted;
     } catch (e) {
-      debugPrint("Error requesting permission: $e");
+      debugPrint("Permission error: $e");
       return false;
     }
   }
 
+  // ---------------- UI ----------------
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: requestPermission(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        } else if (snapshot.hasData && snapshot.data == true) {
-          return const RoutePage();
-        } else {
-          return Scaffold(
-            body: Container(
-              color: Colors.red[800],
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  const Text(
-                    "Welcome",
-                    style: TextStyle(color: Colors.white, fontSize: 40),
-                  ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(25),
-                      child: Image.asset(AppIcons.heartIconD),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    "Permission Required",
-                    style: TextStyle(color: Colors.white, fontSize: 28),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text(
-                      'This app requires storage permissions to list and access your PDF files. Click "Continue" to grant permission.After give the permissions close the app and open.',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      bool granted = await requestPermission();
-                      if (granted) {
-                        Get.off(() => const RoutePage());
-                      } else {
-                        Get.snackbar(
-                          'Permission Denied',
-                          'Storage permission is required to display PDFs.',
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.red[800],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 12,
-                      ),
-                    ),
-                    child: const Text(
-                      'Continue',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ],
+    // loading state
+    if (granted == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    // permission denied UI
+    return Scaffold(
+      body: Container(
+        color: Colors.red[800],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Welcome",
+              style: TextStyle(color: Colors.white, fontSize: 40),
+            ),
+
+            const SizedBox(height: 20),
+
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: Image.asset(AppIcons.heartIconD),
               ),
             ),
-          );
-        }
-      },
+
+            const SizedBox(height: 30),
+
+            const Text(
+              "Storage Permission Required",
+              style: TextStyle(color: Colors.white, fontSize: 28),
+              textAlign: TextAlign.center,
+            ),
+
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'PDF Production needs storage permission to access and display PDF files stored on your device.\n\nWe do not collect or share any files. Everything stays only on your device.\n\nTap "Continue" to grant permission.',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () async {
+                bool result = await requestPermission();
+
+                if (result) {
+                  Get.off(() => const RoutePage());
+                } else {
+                  Get.snackbar(
+                    'Permission Required',
+                    'Storage permission is needed to load your PDF files.',
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
+              ),
+              child: const Text('Continue', style: TextStyle(fontSize: 18)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

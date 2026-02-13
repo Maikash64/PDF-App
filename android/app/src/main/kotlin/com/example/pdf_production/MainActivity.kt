@@ -1,4 +1,4 @@
-package com.example.pdf_production
+package app.maikash.pdf_production
 
 import io.flutter.embedding.android.FlutterActivity
 

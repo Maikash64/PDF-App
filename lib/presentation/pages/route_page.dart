@@ -3,7 +3,7 @@ import 'package:pdf_production/core/assets/icons.dart';
 import 'package:pdf_production/core/theme/app_color.dart';
 import 'package:pdf_production/presentation/pages/favorites_page.dart';
 import 'package:pdf_production/presentation/pages/pdf_listpage.dart';
-import 'package:pdf_production/presentation/pages/setting/setting_page.dart';
+import 'package:pdf_production/presentation/pages/setting/setting_no_feature.dart';
 import 'package:pdf_production/presentation/widget/route_wedget.dart';
 import 'package:get/get.dart';
 import 'package:pdf_production/backend/files_backend.dart';
@@ -43,7 +43,7 @@ class _RoutePageState extends State<RoutePage> {
   final List<Widget> _pages = [
     PdfListPage(key: ValueKey('pdfListPage')),
     const FavoritesPage(),
-    const SettingPage(),
+    const SettingNoFeature(),
   ];
 
   void _changeTab(int index) {
@@ -166,7 +166,7 @@ class _RoutePageState extends State<RoutePage> {
                                 (value) => _searchQueryNotifier.value = value,
                           )
                           : Text(
-                            "PDF Viewer",
+                            "PDF Reader",
                             style: TextStyle(
                               fontSize: screenWidth * 0.05,
                               fontWeight: FontWeight.bold,

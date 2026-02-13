@@ -5,9 +5,9 @@
     <application
         android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
-        android:label="pdf_production"
+        android:label="PDF Reader"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
